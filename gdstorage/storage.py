@@ -8,6 +8,7 @@ import django
 import enum
 import httplib2
 import six
+import time
 from apiclient.discovery import build
 from apiclient.http import MediaIoBaseUpload
 from dateutil.parser import parse
@@ -325,6 +326,7 @@ class GoogleDriveStorage(Storage):
 
         # Setting up permissions
         for p in self._permissions:
+            time.sleep(0.25)  # avoid HTTP 500 "An internal error has occurred which prevented the sharing of these item(s)"
             self._drive_service.permissions().insert(fileId=file_data["id"], body=p.raw).execute()
 
         return file_data.get(u'originalFilename', file_data.get(u'title'))
